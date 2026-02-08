@@ -76,7 +76,7 @@ const{
     confirmPassword,
     accountType,
     contactNumber,
-    otp   
+    otp 
 }=req.body;
 
 //validate
