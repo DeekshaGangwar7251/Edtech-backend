@@ -1,5 +1,7 @@
 const User=require("../models/User");
 const OTP=require("../models/OTP");
+const otpGenerator=require("otp-generator");
+const bcrypt=require("bcrypt");
 
 //send otp
 
