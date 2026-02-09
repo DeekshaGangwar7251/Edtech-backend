@@ -4,6 +4,7 @@ const otpGenerator=require("otp-generator");
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
 require("dotenv").config();
+const mailSender = require("../utils/mailSender");
 
 //send otp
 
@@ -193,7 +194,7 @@ exports.login=async(req,res)=>{
         const payload={
             email: user.email,
             id: user._id,
-            role: user.role,
+            accountType: user.accountType,
         }
         const token=jwt.sign(payload,process.env.JWT_SECRET,{
             expiresIn:"2h",
@@ -231,3 +232,86 @@ exports.login=async(req,res)=>{
 };
 
 //Change Password
+exports.changePassword=async(req,res)=>{
+  //get data from req body
+  //get oldpassword,newpassword,confirmPassword
+  //validation
+  //update password in db
+  //send mail-password updated 
+  //return response
+
+ 
+
+
+// Change Password
+exports.changePassword = async (req, res) => {
+  try {
+    // Get data
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    //  Validation
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "New password and confirm password do not match",
+      });
+    }
+
+    // Get user
+    const userId = req.user.id; // from auth middleware
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // Check old password
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Old password is incorrect",
+      });
+    }
+
+    // Hash new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update in DB
+    user.password = hashedPassword;
+    await user.save();
+
+    // Send mail
+    await mailSender(
+      user.email,
+      "Password Updated",
+      `Hello ${user.firstName || ""}, your password was successfully updated.`
+    );
+
+    // Response
+    return res.status(200).json({
+      success: true,
+      message: "Password changed successfully",
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong",
+    });
+  }
+};
+
+}
