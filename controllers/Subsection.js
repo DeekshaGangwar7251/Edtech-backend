@@ -1,7 +1,9 @@
 const SubSection=require("../models/SubSection");
-const SubSection=require("../models/Section");
-const Section = require("../models/Section");
+const Section=require("../models/Section");
+const {uploadImageToCloudinary}= require("../utils/imageUploader");
 
+
+//CREATE SUB-SECTION
 exports.createSubSection=async(req,res)=>{
     try{
     //fetch data
