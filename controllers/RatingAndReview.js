@@ -1,5 +1,6 @@
 const RatingAndReview=require("../models/RatingAndReview");
 const Course=require("../models/Course");
+const mongoose = require("mongoose");
 
 //create rating
 exports.createRating=async(req,res)=>{
@@ -36,7 +37,7 @@ exports.createRating=async(req,res)=>{
   }
 
   //create rating and review
-  const ratingReview= await RatingReview.create({
+  const ratingReview= await RatingAndReview.create({
                                        rating,review,
                                        course:courseId,
                                        user:userId,
@@ -90,14 +91,14 @@ exports.getAverageRating=async(req,res)=>{
        ])
        //return rating
        if(result.length>0){
-        return response.status(200).json({
+        return res.status(200).json({
             success:true,
             averageRating:result[0].averageRating,
         });
        }
        //if no rating
-       if(result.length>0){
-        return response.status(200).json({
+       if(result.length===0){
+        return res.status(200).json({
             success:true,
             message:'Average Rating is 0,no ratings given till now',
             averageRating:0,
@@ -122,11 +123,11 @@ exports.getAllRating=async(req,res)=>{
                                     select:"firstName lastName email image",
                                 })
                                 .populate({
-                                    path:"Course",
+                                    path:"course",
                                     select:"CourseName",
                                 })
                                 .exec();
-     return response.status(200).json({
+     return res.status(200).json({
             success:true,
             message:'All reviews return successfully',
             data:allReviews,

@@ -15,8 +15,8 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
      const thumbnail=req.files.thumbnailImage;
 
      //validation
-     if(!validation||!courseDescription||!whatYouWillLearn||!price||!tag||!thumbnail){
-        return res.status(400).json({
+     if(!courseName||!courseDescription||!whatYouWillLearn||!price||!tag||!thumbnail){
+        return res.status(200).json({
             success:false,
             message:'All fields are required',
         });
@@ -89,7 +89,7 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
 
 //getAllCourses
 
-exports.showAllCourses=async(req,res)=>{
+exports.getAllCourses=async(req,res)=>{
     try{
 
         const allCourses=await Course.find({},{courseName:true,
@@ -125,8 +125,7 @@ exports.getCourseDetails=async(req,res)=>{
     try{
 
         const {courseId}=req.body;
-        const courseDetails=await Course.find(
-                                  {_id:courseId})
+        const courseDetails = await Course.findById(courseId)
                                   .populate(
                                     {
                                         path:"instructor",
@@ -136,7 +135,7 @@ exports.getCourseDetails=async(req,res)=>{
                                     }
                                   )
                                   .populate("category")
-                                  .populate("ratingAndreviews")
+                                  .populate("ratingAndReviews")
                                   .populate({
                                     path:"courseContent",
                                     populate:{
@@ -152,7 +151,7 @@ exports.getCourseDetails=async(req,res)=>{
             });
         }  
         
-        return res.status(200)({
+        return res.status(200).json({
             success:true,
             message:'Course Details fetched successfully',
             data:courseDetails,

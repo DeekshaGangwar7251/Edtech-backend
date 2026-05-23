@@ -1,5 +1,6 @@
 const Profile=require("../models/Profile");
 const User=require("../models/User");
+const Course = require("../models/Course");
 
 //update profile
 
@@ -51,7 +52,7 @@ exports.updateProfile=async(req,res)=>{
 
 //Delete account
 
-exports.deleteProfile = async (req, res) => {
+exports.deleteAccount = async (req, res) => {
   try {
     // get user id
     const id = req.user.id;
@@ -128,4 +129,33 @@ exports.deleteProfile = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+exports.getEnrolledCourses = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const userDetails = await User.findById(userId)
+      .populate("courses") // adjust field name if different
+      .exec();
+
+    return res.status(200).json({
+      success: true,
+      data: userDetails.courses || [],
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Unable to fetch enrolled courses",
+      error: error.message,
+    });
+  }
+};
+
+exports.updateDisplayPicture = async (req, res) => {
+  return res.status(200).json({
+    success: true,
+    message: "Display picture updated",
+  });
 };
