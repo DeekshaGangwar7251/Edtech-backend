@@ -1,6 +1,7 @@
 const Course=require("../models/Course");
-const Tag=require("../models/Tags");
+const tagDetails=require("../models/Tags");
 const User=require("../models/User");
+const Category=require("../models/Category");
 const {uploadImageToCloudinary}=require("../utils/imageUploader");
 
 //createCourse
@@ -9,14 +10,14 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
     try{
 
      //fetch data
-     const{courseName,courseDescription,whatYouWillLearn,price,tag}=req.body;
+     const{courseName,courseDescription,whatYouWillLearn,price,tag,category}=req.body;
 
      //get thumbnail
      const thumbnail=req.files.thumbnailImage;
 
      //validation
-     if(!courseName||!courseDescription||!whatYouWillLearn||!price||!tag||!thumbnail){
-        return res.status(200).json({
+     if(!courseName||!courseDescription||!whatYouWillLearn||!price||!tag||!thumbnail||!category){
+        return res.status(400).json({
             success:false,
             message:'All fields are required',
         });
@@ -35,7 +36,14 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
      }
 
      //check given tag is valid or not
-     const tagDetails=await Tag.findById(tag);
+    //  const tagDetails=await Tag.findById(tag);
+    const categoryDetails = await Category.findById(category);
+if (!categoryDetails) {
+    return res.status(404).json({
+        success: false,
+        message: 'Category Details not found',
+    });
+}
      if(!tagDetails){
         return res.status(404).json({
             success:false,
@@ -53,13 +61,16 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
         instructor:instructorDetails._id,
         whatYouWillLearn:whatYouWillLearn,
         price,
-        tag:tagDetails._id,
+        // tag:tagDetails._id,
+
+        tag: tag, // Plain string text or array passed directly
+            category: categoryDetails._id,
         thumbnail:thumbnailImage.secure_url,
      })
 
      //add the new course to the user schema of instructor
      await User.findByIdAndUpdate(
-        {_id:instructorDetails._id},
+        {_id:categoryDetails._id},
         {
             $push:{
                 courses:newCourse._id,
@@ -71,7 +82,7 @@ const {uploadImageToCloudinary}=require("../utils/imageUploader");
      //update the TAG ka schema
 
      //return response
-     return res.status(400).json({
+     return res.status(200).json({
         success:true,
         message:"Course created successfully",
         data:newCourse,

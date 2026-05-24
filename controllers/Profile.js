@@ -1,13 +1,14 @@
 const Profile=require("../models/Profile");
 const User=require("../models/User");
 const Course = require("../models/Course");
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 //update profile
 
 exports.updateProfile=async(req,res)=>{
     try{
      //get data
-     const{dateOfBirth="",about="",constactNumber,gender}=req.body;
+     const{dateOfBirth="",about="",contactNumber,gender}=req.body;
 
      //get userid
      const id=req.user.id;
@@ -37,7 +38,7 @@ exports.updateProfile=async(req,res)=>{
       return res.status(200).json({
         success:true,
         message:'profile updated Successfully',
-        updatedSection,
+        data: profileDetails,
      });
 
     }catch(error){
@@ -154,8 +155,54 @@ exports.getEnrolledCourses = async (req, res) => {
 };
 
 exports.updateDisplayPicture = async (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "Display picture updated",
-  });
+  // return res.status(200).json({
+  //   success: true,
+  //   message: "Display picture updated",
+    
+  // });
+
+  try {
+        // Get the logged-in user's ID from the authentication middleware
+        const userId = req.user.id; 
+
+        
+        if (!req.files || !req.files.displayPicture) {
+            return res.status(400).json({
+                success: false,
+                message: "Please upload an image file under the key 'displayPicture'",
+            });
+        }
+
+        // Grab the file data from the request
+        const imageFile = req.files.displayPicture;
+
+        // Upload the file to r Cloudinary storage folder
+        const imageUploadDetails = await uploadImageToCloudinary(
+            imageFile,
+            process.env.FOLDER_NAME,
+            200,
+            200
+        );
+
+        // Find the user in MongoDB, update their image link, and return the NEW data
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { image: imageUploadDetails.secure_url },
+            { new: true } // 'new: true' tells mongoose to give us the fresh data back
+        ).populate("additionalDetails");
+
+       
+        return res.status(200).json({
+            success: true,
+            message: "Display picture updated successfully",
+            data: updatedUser 
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Failed to update display picture",
+            error: error.message,
+        });
+    }
 };
