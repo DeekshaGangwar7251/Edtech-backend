@@ -65,7 +65,7 @@ exports.resetPassword=async(req,res)=>{
       //get userdetails from db using token
       const userDetails=await User.findOne({token:token});
       //if no entry-invalid token
-      if(!userDetils){
+      if(!userDetails){
         return res.json({
             success:false,
             message:'Token is invalid',
@@ -74,7 +74,7 @@ exports.resetPassword=async(req,res)=>{
       //token time check
       if(userDetails.resetPasswordExpires<Date.now()){
         return res.json({
-            success:true,
+            success:false,
             message:'Token is expired,please regenerate your token',
         });
       }
@@ -96,7 +96,7 @@ exports.resetPassword=async(req,res)=>{
        console.log(error);
         return res.status(401).json({
             success:false,
-            message:'Something went wrong,while sending reset password email',
+            message:'Something went wrong,while reset password ',
         });
     }
 }

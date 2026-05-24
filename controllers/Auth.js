@@ -3,6 +3,7 @@ const OTP=require("../models/OTP");
 const otpGenerator=require("otp-generator");
 const bcrypt=require("bcrypt");
 const jwt=require("jsonwebtoken");
+const Profile = require("../models/Profile");
 require("dotenv").config();
 const mailSender = require("../utils/mailSender");
 
@@ -24,8 +25,8 @@ exports.sendOTP=async(req,res)=>{
 
     //generate otp
     var otp=otpGenerator.generate(6,{
-        upperCaseAlphabet:false,
-        lowerCaseAlphabet:false,
+        upperCaseAlphabets:false,
+        lowerCaseAlphabets:false,
         specialChars:false,
     });
     console.log("OTP generated:",otp);
@@ -49,6 +50,13 @@ exports.sendOTP=async(req,res)=>{
 
     const otpBody=await OTP.create(otpPayload);
     console.log(otpBody);
+
+
+
+
+
+
+
 
     //return response successful
     res.status(200).json({
@@ -78,7 +86,7 @@ const{
     password,
     confirmPassword,
     accountType,
-    contactNumber,
+   contactNumber,
     otp 
 }=req.body;
 
@@ -103,7 +111,7 @@ if(password!==confirmPassword){
 const existingUser=await User.findOne({email});
 if(existingUser){
     return res.status(400).json({
-        success:false,
+        success:true,
         message:'User is already registered',
     });
 }
@@ -120,7 +128,7 @@ if(recentOtp.length==0){
         message:'OTP not found',
     })
 }
-else if(otp!==recentOtp.otp){
+else if(otp!==recentOtp[0].otp){
    //Invalid OTP
    return res.status(400).json({
     success:false,
@@ -150,7 +158,7 @@ const user=await User.create({
     image:`https://api.dicebear.com/5.x/initials/svg?seed=${firstName}${lastName}`
 })
 
-return res.status(400).json({
+return res.status(200).json({
     success:true,
     message:'User is registered successfully',
     user,
@@ -315,3 +323,4 @@ exports.changePassword = async (req, res) => {
 };
 
 }
+

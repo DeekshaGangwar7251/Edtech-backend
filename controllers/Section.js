@@ -1,6 +1,7 @@
 const Section=require("../models/Section");
 const Course=require("../models/Course");
 
+
 //CREATE SECTION
 
 exports.createSection=async(req,res)=>{
@@ -17,7 +18,9 @@ exports.createSection=async(req,res)=>{
      }
 
      //create Section
-     const newSection=await Section.createSection({sectionName});
+     const newSection=await Section.create({sectionName});
+     
+     
 
      //update course with section objectId
      const updateCourseDetails=await Course.findByIdAndUpdate(
@@ -28,17 +31,22 @@ exports.createSection=async(req,res)=>{
                                           }
                                         },
                                         {new:true},
-                                        );
-                                        // .populate({
-                                        //   path: "courseContent",
-                                        //   populate: {
-                                        //     path: "subSection", 
-                                        //   },
-                                        // });
+                                        )
+
+                                        .populate({
+            path: "courseContent",
+            select: "sectionName subSection" // 👈 This maps and replaces the IDs with the actual fields!
+        })
+        .exec();
+
+
+                                       
+                                        
     //return response
     return res.status(200).json({
-        status:true,
+        success:true,
         message:'Section created successfully',
+        data: updateCourseDetails
     });
 
     }catch(error){
@@ -88,10 +96,22 @@ exports.updateSection=async(req,res)=>{
 exports.deleteSection=async(req,res)=>{
     try{
      //get id
-     const {sectionId}=req.params;
+    const { sectionId, courseId } = req.body;
 
      //find by id and delete
-     await Section.findByIdAndDelete(sectionId);
+const deletedSection = await Section.findByIdAndDelete(sectionId);
+
+console.log("Deleted Section:", deletedSection);
+
+
+
+
+if(!deletedSection){
+   return res.status(404).json({
+      success:false,
+      message:"Section not found",
+   });
+}
 
      //TODO:do we need to delete the entry from the course schema??
       // remove section from course
@@ -103,10 +123,11 @@ exports.deleteSection=async(req,res)=>{
     );
        
      //return response
-     return res.status(200).json({
-        success:true,
-        message:'Section Deleted Successfully',
-     });
+    return res.status(200).json({
+   success:true,
+   message:'Section Deleted Successfully',
+   deletedSection,
+});
 
     }catch(error){
       return res.status(500).json({
