@@ -2,7 +2,7 @@ import React from 'react'
 import Instructor from "../../../assets/Images/Instructor.png"
 import HighlightText from './HighlightText'
 import { FaArrowRight } from 'react-icons/fa'
-import CTAButton from "../HomePage/Button"
+import CTAButton from "./Button"
 
 const InstructorSection = () => {
   return (
