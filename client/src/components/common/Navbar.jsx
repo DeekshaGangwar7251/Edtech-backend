@@ -5,7 +5,7 @@ import { NavbarLinks } from "../../data/navbar-links";
 import { useSelector } from 'react-redux';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ProfileDropDown from '../core/Auth/ProfileDropDown';
-import { apiconnector } from '../../services/apiconnector'; 
+import { apiConnector } from '../../services/apiconnector'; 
 import { categories } from '../../services/apis';
 import { IoIosArrowDown } from "react-icons/io";
 
@@ -33,7 +33,7 @@ const Navbar = () => {
   // useEffect(() => {
   //   const fetchSublinks = async () => {
   //     try {
-  //       const result = await apiconnector("GET", categories.CATEGORIES_API);
+  //       const result = await apiConnector("GET", categories.CATEGORIES_API);
   //       console.log("Printing Sublinks result:", result);
         
   //       if (result?.data?.data) {
@@ -44,7 +44,7 @@ const Navbar = () => {
   //     }
   //   };
 
-  //   // fetchSublinks(); 
+  //   fetchSublinks(); 
   // }, []);
 
 

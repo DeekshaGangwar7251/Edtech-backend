@@ -155,18 +155,29 @@ export function resetPassword(password, confirmPassword, token, navigate) {
 
       console.log("RESETPASSWORD RESPONSE............", response)
 
-      if (!response.data.success) {
-        throw new Error(response.data.message)
+      // Ensure response and response.data exist before evaluating success flags
+      if (!response?.data || !response.data.success) {
+        throw new Error(response?.data?.message || "Password reset validation failed")
       }
 
       toast.success("Password Reset Successfully")
-      navigate("/login")
+      
+      // Use a safe optional wrapper or fallback to ensure navigate execution won't trigger the catch block
+      if (navigate) {
+        navigate("/login")
+      }
+      
     } catch (error) {
       console.log("RESETPASSWORD ERROR............", error)
-      toast.error("Failed To Reset Password")
+      
+      // Pull the dynamic backend validation message if it exists, otherwise provide a fallback
+      const errorMessage = error.response?.data?.message || error.message || "Failed To Reset Password"
+      toast.error(errorMessage)
+    } finally {
+      // Placing these in a finally block ensures they close safely no matter which route execution takes
+      toast.dismiss(toastId)
+      dispatch(setLoading(false))
     }
-    toast.dismiss(toastId)
-    dispatch(setLoading(false))
   }
 }
 
@@ -181,3 +192,4 @@ export function logout(navigate) {
     navigate("/")
   }
 }
+
