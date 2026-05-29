@@ -1,0 +1,63 @@
+import React from 'react';
+import * as Icon1 from "react-icons/bi";
+import * as Icon2 from "react-icons/hi2";
+import * as Icon3 from "react-icons/io5";
+
+// 1. Dynamic configuration array containing all details
+const contactDetailsData = [
+  {
+    icon: "HiChatBubbleLeftRight",
+    heading: "Chat on us",
+    description: "Our friendly team is here to help.",
+    details: "info@studynotion.com",
+  },
+  {
+    icon: "BiWorld",
+    heading: "Visit us",
+    description: "Come and say hello at our office HQ.",
+    details: "123, Sector 62, Noida, Uttar Pradesh - 201301",
+  },
+  {
+    icon: "IoMdCall",
+    heading: "Call us",
+    description: "Mon - Fri from 9am to 6pm.",
+    details: "+123 456 7890",
+  },
+];
+
+const ContactDetails = () => {
+  return (
+    <div className="flex flex-col gap-6 rounded-xl bg-richblack-800 p-4 lg:p-6 w-full lg:max-w-[450px]">
+      {contactDetailsData.map((ele, i) => {
+        // Dynamic icon component resolver
+        let Icon = Icon1[ele.icon] || Icon2[ele.icon] || Icon3[ele.icon];
+        
+        // Manual fallbacks in case your react-icons version uses slightly different names
+        if (ele.icon === "HiChatBubbleLeftRight") Icon = Icon2.HiChatBubbleLeftRight;
+        if (ele.icon === "BiWorld") Icon = Icon1.BiWorld;
+        if (ele.icon === "IoMdCall") Icon = Icon3.IoCall; // io5 standard package alias
+
+        return (
+          <div
+            className="flex flex-col gap-[2px] p-3 text-sm text-richblack-200"
+            key={i}
+          >
+            {/* Heading and Icon Row */}
+            <div className="flex flex-row items-center gap-3">
+              {Icon && <Icon size={24} className="text-richblack-100" />}
+              <h1 className="text-lg font-semibold text-richblack-5">
+                {ele.heading}
+              </h1>
+            </div>
+            
+            {/* Description & Contact Value */}
+            <p className="font-medium text-richblack-400 mt-1">{ele.description}</p>
+            <p className="font-semibold text-richblack-100">{ele.details}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default ContactDetails;

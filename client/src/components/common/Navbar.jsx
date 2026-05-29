@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState} from 'react';
 import logo from "../../assets/Logo/Logo-Full-Light.png";
 import { Link, matchPath, useLocation } from "react-router-dom"; // Merged duplicate imports
 import { NavbarLinks } from "../../data/navbar-links";

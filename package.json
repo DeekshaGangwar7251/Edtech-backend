@@ -20,8 +20,7 @@
   },
   "homepage": "https://github.com/DeekshaGangwar7251/Edtech-backend#readme",
   "dependencies": {
-    "concurrently": "^9.2.1",
-    "input-otp": "^1.4.2",
-    "react-otp-input": "^3.1.1"
+    "concurrently": "^9.2.1"
+    
   }
 }
