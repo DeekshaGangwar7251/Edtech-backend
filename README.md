@@ -43,12 +43,6 @@ This project is the backend of an EdTech platform where students can enroll in c
 3. Create a .env file and add your configuration keys
 4. Run: npm run dev
 
-Server will run on http://localhost:5000
+Frontend will run on http://localhost:3000
 
-## Deployment
-
-- Backend hosted on Render / Railway
-- Database hosted on MongoDB Atlas
-- Media storage handled using Cloudinary
-
-This project helped me understand backend architecture, authentication, database schema design, and REST API development in a real-world application.
+This project provided hands-on experience in full-stack application development, including frontend engineering, backend architecture, authentication and authorization, database schema design, API development, and third-party service integration.
