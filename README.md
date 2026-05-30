@@ -5,7 +5,7 @@ This project is the backend of an EdTech platform where students can enroll in c
 ## Features
 
 - User signup and login with JWT authentication
-- Role-based access control (Student / Instructor)
+- Role-based access control (Admin/Student / Instructor)
 - OTP verification and forgot password functionality
 - Create, update, and delete courses
 - Course rating system
