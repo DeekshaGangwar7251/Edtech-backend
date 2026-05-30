@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+// import React, {useState} from 'react';
 import logo from "../../assets/Logo/Logo-Full-Light.png";
 import { Link, matchPath, useLocation } from "react-router-dom"; // Merged duplicate imports
 import { NavbarLinks } from "../../data/navbar-links";
 import { useSelector } from 'react-redux';
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import ProfileDropDown from '../core/Auth/ProfileDropDown';
-import { apiConnector } from '../../services/apiconnector'; 
-import { categories } from '../../services/apis';
+// import { apiConnector } from '../../services/apiconnector'; 
+// import { categories } from '../../services/apis';
 import { IoIosArrowDown } from "react-icons/io";
 
 const subLinks=[
@@ -19,6 +19,25 @@ const subLinks=[
     title:"Web development",
     link:"/catalog/web-development"
   },
+  {
+    title:"Android Development",
+    link:"/catalog/android"
+  },
+
+  {
+    title:"Blockchain",
+    link:"/catalog/blockchain"
+  },
+  {
+    title:"Data Science",
+    link:"/catalog/data-science"
+  },
+
+  {
+    title:"Devops",
+    link:"/catalog/devops"
+  },
+
 ];
 
 

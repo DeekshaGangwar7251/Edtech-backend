@@ -9,7 +9,12 @@ import VerifyEmail from "./pages/VerifyEmail";
 import About from "./pages/About";
 import ContactUs from "./pages/ContactUs";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup"
+import Signup from "./pages/Signup";
+import MyProfile from "./components/core/Dashboard/MyProfile";
+import Dashboard from "./pages/Dashboard"
+import PrivateRoute from "./components/core/Auth/PrivateRoute";
+import Error from "./pages/Error"
+import { IoSettings } from "react-icons/io5";
 
 function App() {
   return (
@@ -65,20 +70,30 @@ function App() {
         <Route
           path="about"
           element={
-            <OpenRoute>
+           
               <About/> 
-            </OpenRoute>
+            
           }
         />
 
         <Route
-          path="contact"
-          element={
-            <OpenRoute>
-              <ContactUs/> 
-            </OpenRoute>
-          }
+          path="contact" element={<ContactUs/>}
         />
+
+        <Route
+          element={
+            <PrivateRoute>
+              <Dashboard/>
+            </PrivateRoute>
+          }
+        >
+          <Route path="/dashboard/my-profile" element={<MyProfile/>}/>
+          {/* <Route path="/dashboard/settings" element={<Setting/>}/> */}
+          </Route>
+
+        
+
+       <Route path="*" element={<Error/>}/>
 
      </Routes>
    </div>
