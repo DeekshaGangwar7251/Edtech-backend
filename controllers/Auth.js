@@ -240,7 +240,7 @@ exports.login=async(req,res)=>{
 };
 
 //Change Password
-exports.changePassword=async(req,res)=>{
+
   //get data from req body
   //get oldpassword,newpassword,confirmPassword
   //validation
@@ -322,5 +322,5 @@ exports.changePassword = async (req, res) => {
   }
 };
 
-}
+
 
