@@ -20,7 +20,8 @@
   },
   "homepage": "https://github.com/DeekshaGangwar7251/Edtech-backend#readme",
   "dependencies": {
-    "concurrently": "^9.2.1"
-    
+    "@ramonak/react-progress-bar": "^5.4.0",
+    "concurrently": "^9.2.1",
+    "react-stars": "^2.2.5"
   }
 }
