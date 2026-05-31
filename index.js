@@ -18,6 +18,7 @@ dotenv.config();
 const PORT=process.env.PORT||4000;
 
 //db connect
+
 database.connect();
 
 //middlewares
