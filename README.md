@@ -1,4 +1,4 @@
-# StudyNotion – Backend (MERN Stack)
+# StudyNotion – MERN Stack
 
 This project is the backend of an EdTech platform where students can enroll in courses and instructors can create and manage courses. Currently, the backend is fully implemented using Node.js, Express.js, and MongoDB.
 
