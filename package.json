@@ -22,6 +22,8 @@
   "dependencies": {
     "@ramonak/react-progress-bar": "^5.4.0",
     "concurrently": "^9.2.1",
-    "react-stars": "^2.2.5"
+    "react-dropzone": "^20.1.0",
+    "react-stars": "^2.2.5",
+    "video-react": "^0.16.0"
   }
 }

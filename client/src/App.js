@@ -65,7 +65,7 @@ function App() {
         />
 
         <Route
-          path="update-password/:id"
+          path="update-password/:token"
           element={
             <OpenRoute>
               <UpdatePassword />
@@ -104,8 +104,7 @@ function App() {
         >
           <Route path="/dashboard/my-profile" element={<MyProfile/>}/>
           <Route path="/dashboard/settings" element={<Settings/>}/>
-          <Route path="/dashboard/cart" element={<Cart/>}/>
-          <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>}/>
+          
 
           {
             user?.accountType === ACCOUNT_TYPE.STUDENT &&(
