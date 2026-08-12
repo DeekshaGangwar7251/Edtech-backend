@@ -4,99 +4,85 @@ const User=require("../models/User");
 const Category=require("../models/Category");
 const {uploadImageToCloudinary}=require("../utils/imageUploader");
 
-//createCourse
+exports.createCourse = async (req, res) => {
+    try {
+        // 1. Fetch data
+        const { courseName, courseDescription, whatYouWillLearn, price, category, tag } = req.body;
 
- exports.createCourse=async(req,res)=>{
-    try{
+        // 2. Get thumbnail file
+        const thumbnail = req.files.thumbnailImage;
 
-     //fetch data
-     const{courseName,courseDescription,whatYouWillLearn,price,tag,category}=req.body;
+        // 3. Validation (Removed '!tag' since tags are currently disabled on frontend)
+        if (!courseName || !courseDescription || !whatYouWillLearn || !price || !thumbnail || !category) {
+            return res.status(400).json({
+                success: false,
+                message: 'All fields are required',
+            });
+        }
 
-     //get thumbnail
-     const thumbnail=req.files.thumbnailImage;
+        // 4. Check for instructor
+        const userId = req.user.id;
+        const instructorDetails = await User.findById(userId);
+        console.log("Instructor Details:", instructorDetails);
 
-     //validation
-     if(!courseName||!courseDescription||!whatYouWillLearn||!price||!tag||!thumbnail||!category){
-        return res.status(400).json({
-            success:false,
-            message:'All fields are required',
-        });
-     }
+        if (!instructorDetails) {
+            return res.status(404).json({
+                success: false,
+                message: 'Instructor Details not found',
+            });
+        }
 
-     //check for instructor
-     const userId=req.user.id;
-     const instructorDetails=await User.findById(userId);
-     console.log("Instructor Details:",instructorDetails);
+        // 5. Check given category is valid or not
+        const categoryDetails = await Category.findById(category);
+        if (!categoryDetails) {
+            return res.status(404).json({
+                success: false,
+                message: 'Category Details not found',
+            });
+        }
 
-     if(!instructorDetails){
-        return res.status(404).json({
-            success:false,
-            message:'Instructor Details not found',
-        });
-     }
+        // 6. Upload image to cloudinary
+        const thumbnailImage = await uploadImageToCloudinary(thumbnail, process.env.FOLDER_NAME);
 
-     //check given tag is valid or not
-    //  const tagDetails=await Tag.findById(tag);
-    const categoryDetails = await Category.findById(category);
-if (!categoryDetails) {
-    return res.status(404).json({
-        success: false,
-        message: 'Category Details not found',
-    });
-}
-     if(!tagDetails){
-        return res.status(404).json({
-            success:false,
-            message:'Tag Details not found',
-        });
-     }
-
-     //upload image to cloudinary
-     const thumbnailImage=await uploadImageToCloudinary(thumbnail,process.env.FOLDER_NAME);
-
-     //create an entry for new course
-     const newCourse=await Course.create({
-        courseName,
-        courseDescription,
-        instructor:instructorDetails._id,
-        whatYouWillLearn:whatYouWillLearn,
-        price,
-        // tag:tagDetails._id,
-
-        tag: tag, // Plain string text or array passed directly
+        // 7. Create an entry for new course
+        const newCourse = await Course.create({
+            courseName,
+            courseDescription,
+            instructor: instructorDetails._id,
+            whatYouWillLearn,
+            price,
+            tag: tag || [], // Safe fallback if tag is missing
             category: categoryDetails._id,
-        thumbnail:thumbnailImage.secure_url,
-     })
+            thumbnail: thumbnailImage.secure_url,
+        });
 
-     //add the new course to the user schema of instructor
-     await User.findByIdAndUpdate(
-        {_id:categoryDetails._id},
-        {
-            $push:{
-                courses:newCourse._id,
-            }
-        },
-        {new:true},
-     );
+        // 8. Add the new course to the user schema of instructor (FIXED ID HERE)
+        await User.findByIdAndUpdate(
+            { _id: instructorDetails._id },
+            {
+                $push: {
+                    courses: newCourse._id,
+                },
+            },
+            { new: true }
+        );
 
-     //update the TAG ka schema
+        // 9. Return success response
+        return res.status(200).json({
+            success: true,
+            message: "Course created successfully",
+            data: newCourse,
+        });
 
-     //return response
-     return res.status(200).json({
-        success:true,
-        message:"Course created successfully",
-        data:newCourse,
-     });
-
-    }catch(error){
-     console.error(error);
-     return res.status(500).json({
-        success:false,
-        message:'Failed to create Course',
-        error:error.message,
-     });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to create Course',
+            error: error.message,
+        });
     }
- };
+};
 
 //getAllCourses
 
