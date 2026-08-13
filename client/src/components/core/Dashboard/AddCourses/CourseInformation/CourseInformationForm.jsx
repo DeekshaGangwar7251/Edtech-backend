@@ -134,8 +134,8 @@ const CourseInformationForm = () => {
         console.log("PRINTING FORMDATA", formData);
         const result = await addCourseDetails(formData,token);
         if(result) {
-            setStep(2);
-            dispatch(setCourse(result));
+            dispatch(setStep(2))
+      dispatch(setCourse(result))
         }
         setLoading(false);
         console.log("PRINTING FORMDATA", formData);
@@ -143,148 +143,192 @@ const CourseInformationForm = () => {
 
     }
 
-  return (
-    <form
+ return (
+  <form
     onSubmit={handleSubmit(onSubmit)}
-    className='rounded-md border-richblack-700 bg-richblack-800 p-6 space-y-8'
-    >
-        <div>
-            <label  htmlFor='courseTitle'>Course Title<sup>*</sup></label>
-            <input
-                id='courseTitle'
-                placeholder='Enter Course Title'
-                {...register("courseTitle", {required:true})}
-                className='w-full'
-            />
-            {
-                errors.courseTitle && (
-                    <span>Course Title is Required**</span>
-                )
-            }
-        </div>
+    className="rounded-md border border-richblack-700 bg-richblack-800 p-6 space-y-6"
+  >
 
-        <div>
-            <label  htmlFor='courseShortDesc'>Course Short Description<sup>*</sup></label>
-            <textarea
-                id='courseShortDesc'
-                placeholder='Enter Description'
-                {...register("courseShortDesc", {required:true})}
-                className='min-h-[140px] w-full'
-                />
-            {
-                errors.courseShortDesc && (<span>
-                    Course Description is required**
-                </span>)
-            }
-        </div>
+    {/* Course Title */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="courseTitle"
+        className="text-sm font-medium text-richblack-5"
+      >
+        Course Title<sup className="text-pink-200">*</sup>
+      </label>
 
-        <div className='relative'>
-            <label htmlFor='coursePrice'>Course Price<sup>*</sup></label>
-            <input
-                id='coursePrice'
-                placeholder='Enter Course Price'
-                {...register("coursePrice", {
-                    required:true,
-                    valueAsNumber:true
-                })}
-                className='w-full'
-            />
-            <HiOutlineCurrencyRupee  className='absolute top-1/2 text-richblack-400'/>
-            {
-                errors.coursePrice && (
-                    <span>Course Price is Required**</span>
-                )
-            }
-        </div>
+      <input
+        id="courseTitle"
+        placeholder="Enter Course Title"
+        {...register("courseTitle", { required: true })}
+        className="w-full rounded-lg bg-richblack-700 p-3 text-sm text-richblack-5 outline-none placeholder:text-richblack-400"
+      />
 
-        <div>
-            <label htmlFor='courseCategory'>Course Category<sup>*</sup></label>
-            <select
-            id='courseCategory'
-            defaultValue=""
-            {...register("courseCategory", {required:true})}
-            >
-                <option value="" disabled>Choose a Category</option>
+      {errors.courseTitle && (
+        <span className="text-xs text-pink-200">
+          Course Title is Required**
+        </span>
+      )}
+    </div>
 
-                {
-                    !loading && courseCategories.map((category, index) => (
-                        <option key={index} value={category?._id}>
-                            {category?.name}
-                        </option>
-                    ))
-                }
 
-            </select>
-            {errors.courseCategory && (
-                <span>
-                    Course Category is Required
-                </span>
-            )}
-        </div>
+    {/* Course Description */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="courseShortDesc"
+        className="text-sm font-medium text-richblack-5"
+      >
+        Course Short Description<sup className="text-pink-200">*</sup>
+      </label>
 
-        {/* create a custom component for handling tags input */}
-        {/* <ChipInput
-            label="Tags"
-            name="courseTags"
-            placeholder="Enter tags and press enter"
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            getValues = {getValues}
-        /> */}
+      <textarea
+        id="courseShortDesc"
+        placeholder="Enter Description"
+        {...register("courseShortDesc", { required: true })}
+        className="min-h-[120px] w-full resize-none rounded-lg bg-richblack-700 p-3 text-sm text-richblack-5 outline-none placeholder:text-richblack-400"
+      />
 
-        {/* create a component for uploading and showing preview of media */}
-        {/* Component for uploading and showing preview of media */}
-        <Upload
-            name="courseImage"
-            label="Course Thumbnail"
-            register={register}
-            errors={errors}
-            setValue={setValue}
+      {errors.courseShortDesc && (
+        <span className="text-xs text-pink-200">
+          Course Description is required**
+        </span>
+      )}
+    </div>
+
+
+    {/* Course Price */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="coursePrice"
+        className="text-sm font-medium text-richblack-5"
+      >
+        Course Price<sup className="text-pink-200">*</sup>
+      </label>
+
+      <div className="relative">
+        <HiOutlineCurrencyRupee className="absolute left-3 top-1/2 -translate-y-1/2 text-richblack-400" />
+
+        <input
+          id="coursePrice"
+          placeholder="Enter Course Price"
+          {...register("coursePrice", {
+            required: true,
+            valueAsNumber: true,
+          })}
+          className="w-full rounded-lg bg-richblack-700 p-3 pl-9 text-sm text-richblack-5 outline-none placeholder:text-richblack-400"
         />
-        
-        {/*     Benefits of the Course */}
-        <div>
-            <label>Benefits of the course<sup>*</sup></label>
-            <textarea
-            id='coursebenefits'
-            placeholder='Enter Benefits of the course'
-            {...register("courseBenefits", {required:true})}
-            className='min-h-[130px] w-full'
-            />
-            {errors.courseBenefits && (
-                <span>
-                    Benefits of the course are required**
-                </span>
-            )}
-        </div>
+      </div>
 
-        <RequirementField
-            name="courseRequirements"
-            label="Requirements/Instructions"
-            register={register}
-            errors={errors}
-            setValue={setValue}
-            getValues={getValues}
-        />
-        <div>
-            {
-                editCourse && (
-                    <button
-                    onClick={() => dispatch(setStep(2))}
-                    className='flex items-center gap-x-2 bg-richblack-300'
-                    >
-                        Continue Without Saving
-                    </button>
-                )
-            }
+      {errors.coursePrice && (
+        <span className="text-xs text-pink-200">
+          Course Price is Required**
+        </span>
+      )}
+    </div>
 
-            <IconBtn
-                text={!editCourse ? "Next" : "Save Changes"}
-                />
-        </div>
-    </form>
-  )
+
+    {/* Course Category */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="courseCategory"
+        className="text-sm font-medium text-richblack-5"
+      >
+        Course Category<sup className="text-pink-200">*</sup>
+      </label>
+
+      <select
+        id="courseCategory"
+        defaultValue=""
+        {...register("courseCategory", { required: true })}
+        className="w-full rounded-lg bg-richblack-700 p-3 text-sm text-richblack-5 outline-none"
+      >
+        <option value="" disabled>
+          Choose a Category
+        </option>
+
+        {!loading &&
+          courseCategories.map((category, index) => (
+            <option key={index} value={category?._id}>
+              {category?.name}
+            </option>
+          ))}
+      </select>
+
+      {errors.courseCategory && (
+        <span className="text-xs text-pink-200">
+          Course Category is Required
+        </span>
+      )}
+    </div>
+
+
+    {/* Course Thumbnail */}
+    <Upload
+      name="courseImage"
+      label="Course Thumbnail"
+      register={register}
+      errors={errors}
+      setValue={setValue}
+    />
+
+
+    {/* Benefits */}
+    <div className="flex flex-col gap-2">
+      <label
+        htmlFor="coursebenefits"
+        className="text-sm font-medium text-richblack-5"
+      >
+        Benefits of the course<sup className="text-pink-200">*</sup>
+      </label>
+
+      <textarea
+        id="coursebenefits"
+        placeholder="Enter Benefits of the course"
+        {...register("courseBenefits", { required: true })}
+        className="min-h-[120px] w-full resize-none rounded-lg bg-richblack-700 p-3 text-sm text-richblack-5 outline-none placeholder:text-richblack-400"
+      />
+
+      {errors.courseBenefits && (
+        <span className="text-xs text-pink-200">
+          Benefits of the course are required**
+        </span>
+      )}
+    </div>
+
+
+    {/* Requirements */}
+    <RequirementField
+      name="courseRequirements"
+      label="Requirements/Instructions"
+      register={register}
+      errors={errors}
+      setValue={setValue}
+      getValues={getValues}
+    />
+
+
+    {/* Buttons */}
+    <div className="flex items-center justify-end gap-4 pt-2">
+
+      {editCourse && (
+        <button
+          type="button"
+          onClick={() => dispatch(setStep(2))}
+          className="rounded-md bg-richblack-300 px-5 py-2.5 text-sm font-medium text-richblack-900"
+        >
+          Continue Without Saving
+        </button>
+      )}
+
+      <IconBtn
+        text={!editCourse ? "Next" : "Save Changes"}
+      />
+
+    </div>
+
+  </form>
+)
 }
 
 export default CourseInformationForm
