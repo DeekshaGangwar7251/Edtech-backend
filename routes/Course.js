@@ -174,6 +174,7 @@ const {
   createCourse,
   getAllCourses,
   getCourseDetails,
+  editCourse,
 } = require("../controllers/Course");
 
 const {
@@ -208,9 +209,11 @@ const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth"
 // ***************************************
 
 router.post("/createCourse", auth, isInstructor, createCourse);
+
 router.post("/addSection", auth, isInstructor, createSection);
 router.post("/updateSection", auth, isInstructor, updateSection);
 router.post("/deleteSection", auth, isInstructor, deleteSection);
+router.post("/editCourse", auth, isInstructor, editCourse);
 
 router.post("/addSubSection", auth, isInstructor, createSubSection);
 router.post("/updateSubSection", auth, isInstructor, updateSubSection);

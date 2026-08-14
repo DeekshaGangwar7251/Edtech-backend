@@ -84,6 +84,75 @@ exports.createCourse = async (req, res) => {
     }
 };
 
+// Edit Course Details
+exports.editCourse = async (req, res) => {
+    try {
+        const { courseId, status } = req.body;
+
+        const course = await Course.findById(courseId);
+
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        if (status) {
+            course.status = status;
+        }
+
+        if (req.files && req.files.thumbnailImage) {
+            console.log("thumbnail update");
+
+            const thumbnail = req.files.thumbnailImage;
+
+            const thumbnailImage = await uploadImageToCloudinary(
+                thumbnail,
+                process.env.FOLDER_NAME
+            );
+
+            course.thumbnail = thumbnailImage.secure_url;
+        }
+
+        await course.save();
+
+        const updatedCourse = await Course.findOne({
+            _id: courseId,
+        })
+            .populate({
+                path: "instructor",
+                populate: {
+                    path: "additionalDetails",
+                },
+            })
+            .populate("category")
+            .populate("ratingAndReviews")
+            .populate({
+                path: "courseContent",
+                populate: {
+                    path: "subSection",
+                },
+            })
+            .exec();
+
+        return res.status(200).json({
+            success: true,
+            message: "Course updated successfully",
+            data: updatedCourse,
+        });
+
+    } catch (error) {
+        console.error(error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message,
+        });
+    }
+};
+
 //getAllCourses
 
 exports.getAllCourses=async(req,res)=>{
