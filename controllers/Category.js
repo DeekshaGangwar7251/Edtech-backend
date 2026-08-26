@@ -142,32 +142,76 @@ exports.showAllCategories = async (req, res) => {
   }
 };
 
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
 exports.categoryPageDetails = async (req, res) => {
   try {
     const { categoryId } = req.body;
 
+    // Get published courses for the selected category
     const selectedCategory = await Category.findById(categoryId)
-      .populate("courses")
+      .populate({
+        path: "courses",
+        match: { status: "Published" },
+        populate: "ratingAndReviews",
+      })
       .exec();
 
     if (!selectedCategory) {
       return res.status(404).json({
         success: false,
-        message: "Data not found",
+        message: "Category not found",
       });
     }
 
-    const differentCategories = await Category.find({
+    if (!selectedCategory.courses || selectedCategory.courses.length === 0) {
+      return res.status(200).json({
+        success: true,
+        data: {
+          selectedCategory,
+          differentCategory: null,
+          mostSellingCourses: [],
+        },
+      });
+    }
+
+    // Pick a random other category to showcase
+    const categoriesExceptSelected = await Category.find({
       _id: { $ne: categoryId },
-    })
-      .populate("courses")
+    });
+
+    let differentCategory = null;
+
+    if (categoriesExceptSelected.length > 0) {
+      differentCategory = await Category.findById(
+        categoriesExceptSelected[getRandomInt(categoriesExceptSelected.length)]._id
+      )
+        .populate({
+          path: "courses",
+          match: { status: "Published" },
+        })
+        .exec();
+    }
+
+    // Get a handful of published courses across all categories
+    const allCategories = await Category.find()
+      .populate({
+        path: "courses",
+        match: { status: "Published" },
+      })
       .exec();
+
+    const allCourses = allCategories.flatMap((category) => category.courses);
+    const mostSellingCourses = allCourses.slice(0, 10);
 
     return res.status(200).json({
       success: true,
       data: {
         selectedCategory,
-        differentCategories,
+        differentCategory,
+        mostSellingCourses,
       },
     });
 

@@ -1,7 +1,9 @@
 const Profile=require("../models/Profile");
 const User=require("../models/User");
 const Course = require("../models/Course");
+const CourseProgress = require("../models/CourseProgress");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
+const { convertSecondsToDuration } = require("../utils/secToDuration");
 
 //update profile
 
@@ -136,9 +138,64 @@ exports.getEnrolledCourses = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const userDetails = await User.findById(userId)
-      .populate("courses") // adjust field name if different
+    let userDetails = await User.findById(userId)
+      .populate({
+        path: "courses",
+        populate: {
+          path: "courseContent",
+          populate: {
+            path: "subSection",
+          },
+        },
+      })
       .exec();
+
+    if (!userDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    userDetails = userDetails.toObject();
+
+    for (let i = 0; i < userDetails.courses.length; i++) {
+      let totalDurationInSeconds = 0;
+      let subsectionLength = 0;
+
+      for (let j = 0; j < userDetails.courses[i].courseContent.length; j++) {
+        totalDurationInSeconds += userDetails.courses[i].courseContent[
+          j
+        ].subSection.reduce(
+          (acc, curr) => acc + parseInt(curr.timeDuration || 0),
+          0
+        );
+
+        userDetails.courses[i].totalDuration = convertSecondsToDuration(
+          totalDurationInSeconds
+        );
+
+        subsectionLength +=
+          userDetails.courses[i].courseContent[j].subSection.length;
+      }
+
+      let courseProgress = await CourseProgress.findOne({
+        courseID: userDetails.courses[i]._id,
+        userId: userId,
+      });
+
+      const completedCount = courseProgress?.completedVideos.length || 0;
+
+      if (subsectionLength === 0) {
+        userDetails.courses[i].progressPercentage = 100;
+      } else {
+        const multiplier = Math.pow(10, 2);
+        userDetails.courses[i].progressPercentage =
+          Math.round(
+            (completedCount / subsectionLength) * 100 * multiplier
+          ) / multiplier;
+      }
+    }
 
     return res.status(200).json({
       success: true,
@@ -149,6 +206,37 @@ exports.getEnrolledCourses = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Unable to fetch enrolled courses",
+      error: error.message,
+    });
+  }
+};
+
+exports.instructorDashboard = async (req, res) => {
+  try {
+    const courseDetails = await Course.find({ instructor: req.user.id });
+
+    const courseData = courseDetails.map((course) => {
+      const totalStudentsEnrolled = course.studentsEnrolled.length;
+      const totalAmountGenerated = totalStudentsEnrolled * course.price;
+
+      return {
+        _id: course._id,
+        courseName: course.courseName,
+        courseDescription: course.courseDescription,
+        totalStudentsEnrolled,
+        totalAmountGenerated,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      courses: courseData,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
       error: error.message,
     });
   }
@@ -202,6 +290,41 @@ exports.updateDisplayPicture = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Failed to update display picture",
+            error: error.message,
+        });
+    }
+};
+
+// ======================================================
+// INSTRUCTOR DASHBOARD DATA
+// ======================================================
+
+exports.instructorDashboard = async (req, res) => {
+    try {
+        const courseDetails = await Course.find({ instructor: req.user.id });
+
+        const courseData = courseDetails.map((course) => {
+            const totalStudentsEnrolled = course.studentsEnrolled.length;
+            const totalAmountGenerated = totalStudentsEnrolled * course.price;
+
+            return {
+                _id: course._id,
+                courseName: course.courseName,
+                courseDescription: course.courseDescription,
+                totalStudentsEnrolled,
+                totalAmountGenerated,
+            };
+        });
+
+        return res.status(200).json({
+            success: true,
+            courses: courseData,
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Server Error",
             error: error.message,
         });
     }

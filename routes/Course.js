@@ -174,7 +174,10 @@ const {
   createCourse,
   getAllCourses,
   getCourseDetails,
+  getFullCourseDetails,
+  getInstructorCourses,
   editCourse,
+  deleteCourse,
 } = require("../controllers/Course");
 
 const {
@@ -201,6 +204,8 @@ const {
   getAllRating,
 } = require("../controllers/RatingAndReview");
 
+const { updateCourseProgress } = require("../controllers/CourseProgress");
+
 // Middlewares
 const { auth, isInstructor, isStudent, isAdmin } = require("../middlewares/auth");
 
@@ -213,7 +218,7 @@ router.post("/createCourse", auth, isInstructor, createCourse);
 router.post("/addSection", auth, isInstructor, createSection);
 router.post("/updateSection", auth, isInstructor, updateSection);
 router.post("/deleteSection", auth, isInstructor, deleteSection);
-router.post("/editCourse", auth, isInstructor, editCourse);
+// router.post("/editCourse", auth, isInstructor, editCourse);
 
 router.post("/addSubSection", auth, isInstructor, createSubSection);
 router.post("/updateSubSection", auth, isInstructor, updateSubSection);
@@ -221,7 +226,11 @@ router.post("/deleteSubSection", auth, isInstructor, deleteSubSection);
 
 router.get("/getAllCourses", getAllCourses);
 router.post("/getCourseDetails", getCourseDetails);
-
+router.post("/getFullCourseDetails", auth, getFullCourseDetails);
+router.get("/getInstructorCourses", auth, isInstructor, getInstructorCourses);
+router.post("/editCourse", auth, isInstructor, editCourse);
+router.delete("/deleteCourse", deleteCourse)
+router.post("/updateCourseProgress", auth, isStudent, updateCourseProgress)
 // ***************************************
 // Category routes
 // ***************************************

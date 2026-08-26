@@ -14,7 +14,7 @@ const courseSchema=new mongoose.Schema({
         ref:"User",
         required:true,
     },
-    whatYouWillLlearn:{
+    whatYouWillLearn:{
         type:String,   
     },
     courseContent:[
