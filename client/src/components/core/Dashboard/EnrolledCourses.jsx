@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { getUserEnrolledCourses } from '../../../services/operations/profileAPI';
 import ProgressBar from '@ramonak/react-progress-bar';
 
 const EnrolledCourses = () => {
   const { token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [enrolledCourses, setEnrolledCourses] = useState(null);
   const [viewTab, setViewTab] = useState("all"); // Tracks navigation pills filter
 
@@ -69,7 +71,16 @@ const EnrolledCourses = () => {
             return (
               <div
                 key={course._id || index}
-                className={`flex items-center border-b border-richblack-700 px-5 py-4 bg-richblack-900/40 hover:bg-richblack-800/50 transition-all duration-150 ${
+                onClick={() => {
+                  const firstSection = course.courseContent?.[0]
+                  const firstSubSection = firstSection?.subSection?.[0]
+                  if (firstSection && firstSubSection) {
+                    navigate(
+                      `/view-course/${course._id}/section/${firstSection._id}/sub-section/${firstSubSection._id}`
+                    )
+                  }
+                }}
+                className={`flex cursor-pointer items-center border-b border-richblack-700 px-5 py-4 bg-richblack-900/40 hover:bg-richblack-800/50 transition-all duration-150 ${
                   index === enrolledCourses.length - 1 ? "border-none" : ""
                 }`}
               >

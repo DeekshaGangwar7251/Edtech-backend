@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { VscSignOut } from "react-icons/vsc"
+import { VscMenu, VscSignOut, VscChromeClose } from "react-icons/vsc"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -17,6 +17,8 @@ export default function Sidebar() {
   const navigate = useNavigate()
   // to keep track of confirmation modal
   const [confirmationModal, setConfirmationModal] = useState(null)
+  // controls the slide-in drawer on small screens
+  const [mobileOpen, setMobileOpen] = useState(false)
 
   if (profileLoading || authLoading) {
     return (
@@ -28,8 +30,38 @@ export default function Sidebar() {
 
   return (
     <>
-      <div className="flex h-[calc(100vh-3.5rem)] min-w-[220px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10">
-        <div className="flex flex-col">
+      {/* Hamburger button - only visible on small screens, always clickable */}
+      <button
+        onClick={() => setMobileOpen(true)}
+        className="fixed left-4 top-[4.25rem] z-40 rounded-md bg-richblack-700 p-2 text-richblack-5 md:hidden"
+        aria-label="Open menu"
+      >
+        <VscMenu className="text-xl" />
+      </button>
+
+      {/* Overlay behind the drawer on mobile */}
+      {mobileOpen && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          className="fixed inset-0 z-40 bg-black/60 md:hidden"
+        />
+      )}
+
+      <div
+        className={`fixed inset-y-0 left-0 z-50 flex h-[calc(100vh-3.5rem)] w-64 flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 transition-transform duration-300 ease-in-out
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full"}
+        md:relative md:z-0 md:h-[calc(100vh-3.5rem)] md:w-auto md:min-w-[220px] md:translate-x-0`}
+      >
+        {/* Close button - only visible on small screens */}
+        <button
+          onClick={() => setMobileOpen(false)}
+          className="absolute right-4 top-4 text-richblack-5 md:hidden"
+          aria-label="Close menu"
+        >
+          <VscChromeClose className="text-xl" />
+        </button>
+
+        <div className="flex flex-col" onClick={() => setMobileOpen(false)}>
           {sidebarLinks.map((link) => {
             if (link.type && user?.accountType !== link.type) return null
             return (

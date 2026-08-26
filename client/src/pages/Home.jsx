@@ -10,13 +10,14 @@ import TimelineSection from '../components/core/HomePage/TimelineSection';
 import LearningLanguageSection from '../components/core/HomePage/LearningLanguageSection';
 import InstructorSection from '../components/core/HomePage/InstructorSection';
 import ExploreMore from '../components/core/HomePage/ExploreMore';
+import ReviewSlider from '../components/common/ReviewSlider';
 
 export const Home = () => {
   return (
     <div >
         {/* Section1 */}
         {/* <div className='relative mx-auto flex flex-col w-11/12 items-center text-white justify-between'> */}
-        <div className="min-h-screen bg-richblack-900 text-white flex flex-col items-center pt-10  ">
+        <div className="min-h-screen bg-richblack-900 text-white flex flex-col items-center pt-10 px-4  ">
             <Link to={"/signup"}>
 
              <div className=" group mx-auto w-fit flex items-center gap-2 rounded-full bg-richblack-800 px-4 py-2 font-bold text-richblack-200 transition-all duration-200 hover:scale-99">
@@ -29,16 +30,16 @@ export const Home = () => {
 
             </Link>
 
-         <div className='text-center text-4xl font-semibold mt-7'>
+         <div className='text-center text-3xl sm:text-4xl font-semibold mt-7'>
            Empower Your Future with 
            <HighlightText text={" Coding skills"}/>
         </div> 
            
-        <div className="mt-4 w-[70%] text-center text-lg font-bold text-richblack-300 ">
+        <div className="mt-4 w-full sm:w-[85%] md:w-[70%] text-center text-base sm:text-lg font-bold text-richblack-300 ">
            With our online coding courses, you can learn at your own pace, from anywhere in the world, and get access to a wealth of resources, including hands-on projects, quizzes, and personalized feedback from instructors. 
         </div>
 
-        <div className='flex flex-row gap-7 mt-8'>
+        <div className='flex flex-col sm:flex-row gap-4 sm:gap-7 mt-8 w-full sm:w-auto px-6 sm:px-0'>
             <CTAButton active={true} linkto={"/signup"}>
                 Learn More
             </CTAButton>
@@ -57,7 +58,7 @@ export const Home = () => {
             loop
             autoPlay
             playsInline
-            className="w-[11/12] max-w-[1000px] h-auto rounded-md object-cover mx-auto relative z-10"
+            className="w-11/12 max-w-[1000px] h-auto rounded-md object-cover mx-auto relative z-10"
             style={{
               boxShadow: "20px 20px 0px 0px #F5F5F5",
             }}
@@ -201,16 +202,16 @@ backgroundGradient={<div className="absolute top-[-10%] left-[5%] h-[280px] w-[2
            </div>
             
 
-        <div className="w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-7 mx-auto">
+        <div className="w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-7 mx-auto px-4">
 
-         <div className="flex flex-row gap-5 mb-10 mt-[50px] ml-[40px]">
-           <div className="text-4xl font-semibold w-[45%]">
+         <div className="flex flex-col lg:flex-row gap-8 lg:gap-5 mb-10 mt-[50px]">
+           <div className="text-3xl sm:text-4xl font-semibold w-full lg:w-[45%]">
               Get the skills you need for a
               <HighlightText text={"Job that is in demand"}/>
            </div>
          
 
-         <div className="flex flex-col gap-10 w-[40%] items-start ml-[40px]">
+         <div className="flex flex-col gap-6 lg:gap-10 w-full lg:w-[40%] items-start">
            <div className="text-[16px]">
               The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
             </div>
@@ -224,7 +225,7 @@ backgroundGradient={<div className="absolute top-[-10%] left-[5%] h-[280px] w-[2
 
            <TimelineSection/>
          
-         <div className="-mt-32">
+         <div className="lg:-mt-32">
            <LearningLanguageSection/>
          </div>
 
@@ -235,10 +236,11 @@ backgroundGradient={<div className="absolute top-[-10%] left-[5%] h-[280px] w-[2
 
     {/* section3 */}
 
-    <div className="w-11/12 mx-auto max-w-maxContent flex-col items-center justify-between gap-8 first-letter bg-richblack-900 text-white">
+    <div className="w-11/12 mx-auto max-w-maxContent flex-col items-center justify-between gap-8 first-letter bg-richblack-900 text-white px-4">
       <InstructorSection/>
-      <h2 className="text-center text-4xl font-semibold mt-10">Review from Other Learners</h2>
+      <h2 className="text-center text-3xl sm:text-4xl font-semibold mt-10">Review from Other Learners</h2>
        {/* Review Slider */}
+       <ReviewSlider />
     </div>
 
        
