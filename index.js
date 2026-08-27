@@ -17,16 +17,12 @@ const contactRoutes = require("./routes/ContactUs");
 dotenv.config();
 const PORT=process.env.PORT||4000;
 
-//db connect
-
-database.connect();
-
 //middlewares
 app.use(express.json());
 app.use(cookieParser());
 app.use(
     cors({
-        origin:"http://localhost:3000",
+        origin: [process.env.FRONTEND_URL || "http://localhost:3000", "http://localhost:3000"],
         credentials:true,
     })
 )
@@ -58,6 +54,14 @@ app.get("/",(req,res)=>{
     });
 });
 
-app.listen(PORT,()=>{
-    console.log(`App is running at ${PORT}`)
-})
+//db connect, then only start listening once DB is actually ready
+database.connect()
+    .then(() => {
+        app.listen(PORT,()=>{
+            console.log(`App is running at ${PORT}`)
+        })
+    })
+    .catch((error) => {
+        console.error("Server failed to start because DB connection failed:", error?.message || error)
+        process.exitCode = 1
+    })
