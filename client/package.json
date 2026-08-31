@@ -65,7 +65,7 @@
   },
   "overrides": {
     "react": "$react",
-    "react-dom": "$react-dom",
-    "browserslist": "4.21.10"
+    "react-dom": "$react-dom"
   }
 }
+
